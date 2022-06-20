@@ -1,21 +1,29 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework import permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
 
 from django.contrib.auth import login, logout, authenticate
 
+from user.serializers import UserProfileSerializer, UserSerializer, UserSignupSerializer
+
 
 class UserView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     # 사용자 정보 조회
     def get(self, request):
-        return Response({"message": "get method"})
+        return Response(UserSerializer(request.user).data, status=status.HTTP_200_OK)
 
     # 회원가입
     def post(self, request):
-        return Response({"message": "post method!!"})
+        serializer = UserSignupSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "가입 완료!!"})
+        else:
+            print(serializer.errors)
+            return Response({"message": "가입 실패!!"})
 
     # 회원 정보 수정
     def put(self, request):

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+from blog.models import Article
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, password=None):
@@ -65,9 +67,8 @@ class Hobby(models.Model):
     def __str__(self):
         return self.name
 
+
 # user detail info table
-
-
 class UserProfile(models.Model):
     # user = models.ForeignKey(User, verbose_name="유저", on_delete=models.CASCADE, unique=True)
     user = models.OneToOneField(
@@ -79,9 +80,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} 님의 프로필입니다."
-
-
-# user - user detail : 1:1
-# 한 유저가 두 프로필을 가질 수는 없음
-
-# 쿼리를 날려서 crud를 한다
