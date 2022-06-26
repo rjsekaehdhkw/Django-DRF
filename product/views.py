@@ -24,11 +24,13 @@ class ProductView(APIView):
     def get(self, request):
         today = datetime.now()
         products = ProductModel.objects.filter(
-            Q(exposure_start_date__lte=today, exposure_end_date__gte=today,) |
+            Q(exposure_end_date__gte=today, is_active=True) |
             Q(user=request.user)
         )
 
-        return Response(ProductSerializer(products, many=True).data, status=status.HTTP_200_OK)
+        serialized_data = ProductSerializer(products, many=True).data
+
+        return Response(serialized_data, status=status.HTTP_200_OK)
 
     # product 생성
     def post(self, request):
